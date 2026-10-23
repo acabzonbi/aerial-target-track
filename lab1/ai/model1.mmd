@@ -1,0 +1,79 @@
+erDiagram
+    %% Зв'язки, описані в spec.md
+    REGION ||--|{ CITY : "включає"
+    USER ||--o{ SUBSCRIPTION : "створює"
+    TARGET_TYPE ||--o{ AIR_TARGET : "класифікує"
+    AIR_TARGET ||--|{ TRACK_POINT : "має позиції"
+    THREAT_CALC ||--o{ NOTIFICATION : "створює"
+    USER ||--o{ NOTIFICATION : "отримує"
+
+    %% Зв'язки, які випливають з FK у spec.md, але не описані в розділі "Зв'язки"
+    CITY ||--o{ SUBSCRIPTION : "відстежується в"
+    DATA_SOURCE ||--o{ TRACK_POINT : "повідомляє"
+    AIR_TARGET ||--o{ THREAT_CALC : "оцінюється"
+    CITY ||--o{ THREAT_CALC : "під загрозою"
+
+    %% Зв'язки з цілями, описані в spec.md без відповідних FK
+    CITY }o--o{ AIR_TARGET : "пов'язана з"
+    REGION ||--o{ AIR_TARGET : "містить"
+
+    REGION {
+        string region_id PK
+        string name
+    }
+
+    CITY {
+        string city_id PK
+        string name
+        float latitude
+        float longitude
+        string region_id FK
+    }
+
+    USER {
+        string user_id PK
+    }
+
+    SUBSCRIPTION {
+        string subscription_id PK
+        string user_id FK
+        string city_id FK
+        int alert_radius
+    }
+
+    TARGET_TYPE {
+        string target_type_id PK
+        string name
+    }
+
+    AIR_TARGET {
+        string target_id PK
+        string target_type_id FK
+        string status
+    }
+
+    DATA_SOURCE {
+        string source_id PK
+        string name
+    }
+
+    TRACK_POINT {
+        string point_id PK
+        string target_id FK
+        string source_id FK
+        float latitude
+        float longitude
+    }
+
+    THREAT_CALC {
+        string calc_id PK
+        string target_id FK
+        string city_id FK
+        float calc_at
+    }
+
+    NOTIFICATION {
+        string notification_id PK
+        string user_id FK
+        string calc_id FK
+    }
